@@ -1,0 +1,20 @@
+[
+  {
+    "rental_unit_id": "unit-001",
+    "agency_id": "agency-001",
+    "unit_name": "Alicante Studio",
+    "city": "Alicante",
+    "monthly_rent": 540,
+    "currency": "EUR",
+    "is_active": true
+  },
+  {
+    "rental_unit_id": "unit-002",
+    "agency_id": "agency-002",
+    "unit_name": "Krakow Apartment",
+    "city": "Krakow",
+    "monthly_rent": 3200,
+    "currency": "PLN",
+    "is_active": true
+  }
+]
