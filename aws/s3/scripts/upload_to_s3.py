@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from aws.s3.services.s3_service import S3Service
 from aws.s3.validation.validators import validate_json_file
+from aws.s3.utils.object_key import build_object_key
+
 import argparse
 from datetime import datetime, timezone
 from pathlib import Path
@@ -28,18 +30,6 @@ def parse_arguments() -> argparse.Namespace:
 
     return parser.parse_args()
 
-def build_object_key(
-    zone: str,
-    table_name: str,
-    timestamp: datetime,
-) -> str:
-    return (
-        f"{zone}/{table_name}/"
-        f"ingestion_year={timestamp:%Y}/"
-        f"ingestion_month={timestamp:%m}/"
-        f"ingestion_day={timestamp:%d}/"
-        f"{table_name}_{timestamp:%Y%m%dT%H%M%SZ}.json"
-    )
 
 def get_source_file(table_name: str) -> Path:
     script_directory = Path(__file__).resolve().parent
@@ -65,9 +55,9 @@ def upload_snapshot(table_name: str) -> str:
     ingestion_time = datetime.now(timezone.utc)
 
     object_key = build_object_key(
-        destination_zone,
-        table_name,
-        ingestion_time,
+        destination_zone=destination_zone,
+        table_name=table_name,
+        ingestion_time=ingestion_time,
     )
 
     s3_service = S3Service()
