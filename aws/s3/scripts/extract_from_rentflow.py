@@ -4,41 +4,42 @@ import argparse
 import json
 from pathlib import Path
 
-from aws.s3.extractors.supabase_extractor import SupabaseExtractor
+from aws.s3.extractors.data_export_extractor import DataExportExtractor
+
 
 SUPPORTED_TABLES = {
-    "rental_units",
-    "tenancies",
     "agencies",
+    "properties",
+    "rental_units",
+    "tenants",
+    "invitations",
+    "tenancies",
+    "email_send_log",
 }
 
 
-def parse_arguments() -> argparse.Namespace:
+def parse_arguments():
+
     parser = argparse.ArgumentParser(
-        description="Extract a RentFlow table from Supabase."
+        description="Extract RentFlow data."
     )
 
     parser.add_argument(
         "table_name",
         choices=sorted(SUPPORTED_TABLES),
-        help="Source table to extract.",
     )
 
     return parser.parse_args()
 
 
-def write_json_snapshot(
-    table_name: str,
-    records: list[dict],
-) -> Path:
+def save_json(table_name, records):
+
     output_directory = (
         Path(__file__).resolve().parent.parent
         / "extracted_data"
     )
-    output_directory.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
+
+    output_directory.mkdir(exist_ok=True)
 
     output_file = output_directory / f"{table_name}.json"
 
@@ -46,27 +47,28 @@ def write_json_snapshot(
         "w",
         encoding="utf-8",
     ) as file:
+
         json.dump(
             records,
             file,
+            indent=4,
             ensure_ascii=False,
-            indent=2,
-            default=str,
         )
 
     return output_file
 
 
-def main() -> None:
+def main():
+
     arguments = parse_arguments()
 
-    extractor = SupabaseExtractor()
+    extractor = DataExportExtractor()
 
     records = extractor.extract_table(
         arguments.table_name
     )
 
-    output_file = write_json_snapshot(
+    output_file = save_json(
         arguments.table_name,
         records,
     )
