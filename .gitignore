@@ -7,6 +7,9 @@ __pycache__/
 # AWS credentials must never be committed
 .aws/
 
+# Locally extracted operational data
+aws/s3/extracted_data/
+
 # C extensions
 *.so
 
