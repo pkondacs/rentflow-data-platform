@@ -2,21 +2,19 @@
 
 # Daily Practice Checklist
 
-
 - [ ] Pull latest code
 - [ ] Activate virtual environment
 - [ ] Run all tests
+- [ ] Review Azure Board
 - [ ] Complete one Azure Board task
 - [ ] Implement one feature
-- [ ] Write/update Obsidian notes
+- [ ] Update project documentation (README/docs if needed)
 - [ ] Commit changes
 - [ ] Push to GitHub
-
 
 ## 2. Review Azure Board
 
 Open the Sprint Board.
-
 Review:
 
 - Active PBIs
@@ -36,11 +34,6 @@ AWS-010
 Decide which task will be completed today.
 
 ---
-
-
-
-
-
 ## Quick Start
 Follow these steps every time you start working on the project.
 
@@ -73,7 +66,7 @@ Expected:
 at the beginning of the terminal prompt.
 
 ---
-### 4. Verify Pytho, AWS CLI, Git branch
+### 4. Verify Python, AWS CLI, Git branch
 ```powershell
 python --version
 aws --version
@@ -134,29 +127,56 @@ python -m aws.s3.scripts.upload_to_s3 agencies
 ```
 
 Extract RentFlow data
+
 ```powershell
-python -m aws.s3.scripts.extract_from_supabase rental_units
+python -m aws.s3.scripts.extract_from_rentflow rental_units
 ```
 
 ---
+
+# Development Workflow
+
+## Engineering Mindset
+
+The objective is not only to complete AWS services or write Python code.
+
+Build the project as if it were a production data platform while thinking like a Senior Data Engineer or Data Architect.
+
+For every implementation ask:
+
+- Why is this needed?
+- What problem does it solve?
+- How would this work in production?
+- How would it scale to millions of records?
+- What happens if the source schema changes?
+- How can it be tested?
+- How would another engineer maintain it?
+
+---
+
+## Development Cycle
+
+For every Azure Board task:
+
+1. Understand the problem.
+2. Design the solution.
+3. Implement the feature.
+4. Test the implementation.
+5. Break it intentionally.
+6. Fix the issue.
+7. Document only reusable knowledge.
+8. Commit and push.
+
+Every feature should be independently testable.
+
+
+
+---
 ## End of day
-Before finishing:
 ```powershell
 git status
-```
-
-Stage changes
-```powershell
 git add .
-```
-
-Commit
-```powershell
 git commit -m "Meaningful commit message"
-```
-
-Push
-```powershell
 git push origin aws-learning
 ```
 
@@ -185,3 +205,18 @@ pytest.ini
 .env.example
 ```
 
+
+---
+
+# Documentation
+
+This repository is the primary source of documentation.
+
+| Location | Purpose |
+|----------|---------|
+| README.md | Project overview, setup, workflow and roadmap |
+| docs/ | Architecture, AWS concepts and design decisions |
+| Azure Boards | Work planning, tasks and implementation progress |
+| Git history | Change history and implementation details |
+
+Avoid maintaining duplicate documentation in external note-taking applications.
