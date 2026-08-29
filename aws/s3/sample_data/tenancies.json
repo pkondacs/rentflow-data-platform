@@ -1,0 +1,10 @@
+[
+  {
+    "tenancy_id": "tenancy-001",
+    "rental_unit_id": "unit-001",
+    "tenant_name": "Demo Tenant",
+    "start_date": "2026-07-01",
+    "end_date": null,
+    "status": "active"
+  }
+]

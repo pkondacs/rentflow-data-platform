@@ -1,0 +1,16 @@
+[
+  {
+    "agency_id": "agency-001",
+    "agency_name": "RentFlow Alicante",
+    "country": "Spain",
+    "city": "Alicante",
+    "is_active": true
+  },
+  {
+    "agency_id": "agency-002",
+    "agency_name": "RentFlow Krakow",
+    "country": "Poland",
+    "city": "Krakow",
+    "is_active": true
+  }
+]

@@ -1,7 +1,14 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
+*.py[cod]
 *$py.class
+
+# AWS credentials must never be committed
+.aws/
+
+# Locally extracted operational data
+aws/s3/extracted_data/
 
 # C extensions
 *.so
@@ -149,6 +156,8 @@ activemq-data/
 
 # Environments
 .env
+.env.*
+!.env.example
 .envrc
 .venv
 env/
