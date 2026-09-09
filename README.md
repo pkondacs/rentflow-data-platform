@@ -193,7 +193,17 @@ aws/
         validation/
         tests/
 
+azure/
+    sources/
+        oracle/customer_master/
+        sqlserver/transactions/
+        teradata/credit_exposure/
+    docker/
+
+adf/                  (ADF Git-integration root - see adf/README.md)
+
 docs/
+    azure/
 
 README.md
 
@@ -216,6 +226,7 @@ This repository is the primary source of documentation.
 |----------|---------|
 | README.md | Project overview, setup, workflow and roadmap |
 | docs/ | Architecture, AWS concepts and design decisions |
+| docs/azure/ | Source systems and target ADF architecture for the Azure ingestion foundation (AZURE-001) |
 | Azure Boards | Work planning, tasks and implementation progress |
 | Git history | Change history and implementation details |
 

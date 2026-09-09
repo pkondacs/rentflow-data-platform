@@ -1,0 +1,65 @@
+# AZURE-001: local Oracle + SQL Server source containers.
+#
+# Teradata is intentionally NOT included here - there is no lightweight
+# official Teradata container suitable for local development (Vantage
+# Express ships as a full VM appliance). See docs/azure/03_local_dev_setup.md.
+#
+# Credentials are read from environment variables (see ../../.env.example)
+# and must never be hardcoded here.
+
+services:
+  oracle:
+    image: gvenzl/oracle-free:23-slim
+    container_name: azure-learning-oracle
+    environment:
+      ORACLE_PASSWORD: ${ORACLE_PASSWORD}
+      APP_USER: ${ORACLE_APP_USER}
+      APP_USER_PASSWORD: ${ORACLE_APP_USER_PASSWORD}
+    ports:
+      - "1521:1521"
+    volumes:
+      - ../sources/oracle/customer_master:/container-entrypoint-initdb.d:ro
+      - oracle_data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 15
+      start_period: 60s
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: azure-learning-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 15
+      start_period: 30s
+
+  sqlserver-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: azure-learning-sqlserver-init
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    volumes:
+      - ../sources/sqlserver/transactions:/scripts:ro
+    entrypoint: ["/bin/bash", "-c"]
+    command: >
+      "/opt/mssql-tools18/bin/sqlcmd -S sqlserver -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -i /scripts/01_create_schema.sql &&
+       /opt/mssql-tools18/bin/sqlcmd -S sqlserver -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -i /scripts/02_seed_data.sql"
+    restart: "no"
+
+volumes:
+  oracle_data:
+  sqlserver_data:
