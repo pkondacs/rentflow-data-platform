@@ -12,6 +12,26 @@
 - [ ] Commit changes
 - [ ] Push to GitHub
 
+
+## Git Branching Strategy
+
+`main` is the integration branch and represents deployable code.
+
+Development changes should normally be implemented on short-lived feature branches:
+
+feature/<work-item>-<description>
+
+Examples:
+
+feature/CICD-102-ci-validation
+feature/AZURE-004-oracle-ingestion
+feature/AWS-012-s3-validation
+
+Changes are merged into `main` through Pull Requests.
+
+CI validation will be added under CICD-102 so that Pull Requests are automatically tested before merge.
+
+
 ## 2. Review Azure Board
 
 Open the Sprint Board.
