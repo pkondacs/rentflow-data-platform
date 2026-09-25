@@ -3,7 +3,6 @@ from aws.s3.utils.object_key import build_object_key
 
 
 def test_build_raw_object_key():
-    assert False, "CICD-102 intentional CI failure"
     ingestion_time = datetime(
         2026,
         7,
