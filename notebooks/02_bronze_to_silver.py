@@ -1,3 +1,4 @@
+# Databricks notebook source
 from pyspark.sql.functions import col, trim, current_timestamp, lower, to_date
 
 # RENTAL_UNITS_RAW

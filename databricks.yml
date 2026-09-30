@@ -1,0 +1,13 @@
+bundle:
+  name: rentflow-data-platform
+
+include:
+  - resources/*.yml
+
+targets:
+  dev:
+    mode: development
+    default: true
+
+    workspace:
+      host: https://adb-7405613424942929.9.azuredatabricks.net

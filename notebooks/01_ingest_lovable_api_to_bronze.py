@@ -1,3 +1,4 @@
+# Databricks notebook source
 # %sql
 # CREATE SCHEMA IF NOT EXISTS bronze;
 # CREATE SCHEMA IF NOT EXISTS silver;
