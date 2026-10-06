@@ -1,4 +1,4 @@
-
+# Databricks notebook source
 from pyspark.sql.functions import col, round, current_timestamp
 
 spark.sql("CREATE SCHEMA IF NOT EXISTS gold")
