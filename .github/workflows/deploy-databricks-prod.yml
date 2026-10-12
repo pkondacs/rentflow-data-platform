@@ -1,0 +1,93 @@
+# ==========================================================
+# RentFlow — Databricks PROD Deployment (CD)
+# ==========================================================
+# PURPOSE:
+# Deploy the RentFlow Databricks Bundle to PROD.
+# Uses OAuth M2M authentication with a Service Principal.
+#
+# This workflow:
+# 1. Is triggered manually from GitHub Actions.
+# 2. Uses PROD-specific credentials and configuration.
+# 3. Validates the Databricks Bundle.
+# 4. Deploys/updates Databricks resources in PROD.
+#
+# IMPORTANT:
+# Deployment does NOT execute the ETL job.
+
+# Workflow name displayed in GitHub → Actions
+name: Deploy Databricks PROD
+
+# 1. TRIGGER
+# workflow_dispatch = manual execution.
+# GitHub → Actions → Deploy Databricks PROD → Run workflow
+on:
+  workflow_dispatch:
+
+# 2. JOBS
+jobs:
+  deploy-prod:
+
+    # Temporary Linux runner provided by GitHub.
+    runs-on: ubuntu-latest
+
+    # Use GitHub Environment "prod".
+    # Contains PROD-specific variables, secrets and
+    # optional approval/protection rules.
+    #
+    # If required reviewers are configured, GitHub pauses
+    # the job until an authorized reviewer approves.
+    environment: prod
+
+    # 3. ENVIRONMENT VARIABLES
+    # Passed to the Databricks CLI during execution.
+    env:
+
+      # PROD Databricks workspace URL.
+      # GitHub → Settings → Environments → prod → Variables
+      DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+
+      # PROD deployment Service Principal client ID.
+      # Identifies the machine account.
+      DATABRICKS_CLIENT_ID: ${{ vars.DATABRICKS_CLIENT_ID }}
+
+      # OAuth client secret for the Service Principal.
+      # Stored securely as a GitHub Environment Secret.
+      DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
+
+      # Force OAuth Machine-to-Machine authentication.
+      # No personal login or interactive browser required.
+      DATABRICKS_AUTH_TYPE: oauth-m2m
+
+    # 4. DEPLOYMENT STEPS
+    # Executed sequentially on the GitHub runner.
+    steps:
+
+      # Download the selected Git ref onto the runner.
+      # By default, this is the ref used to start the run.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Install the Databricks CLI to manage bundles.
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@main
+
+      # 5. VALIDATE BUNDLE
+      # Check the PROD target configuration and resources.
+      # Detect configuration errors before deployment.
+      #
+      # Validation does NOT create or update resources.
+      - name: Validate Databricks PROD bundle
+        run: databricks bundle validate -t prod
+
+      # 6. DEPLOY BUNDLE
+      # Create or update the Databricks resources defined
+      # by the bundle, using the PROD target settings.
+      #
+      # Examples:
+      # - Jobs and their tasks
+      # - Notebook/application files
+      # - Other configured Databricks resources
+      #
+      # This does NOT automatically run the ETL pipeline.
+      - name: Deploy Databricks bundle to PROD
+        run: databricks bundle deploy -t prod

@@ -1,25 +1,72 @@
+# ==========================================================
+# RentFlow — Databricks Authentication Test
+# ==========================================================
+# PURPOSE:
+# Verify that GitHub Actions can authenticate to Databricks
+# using a Service Principal and OAuth Machine-to-Machine (M2M).
+#
+# This workflow only tests authentication.
+# It does NOT deploy or execute any Databricks jobs.
+
+# Workflow name displayed under GitHub → Actions
 name: Test Databricks Authentication
 
+# 1. TRIGGER
+# workflow_dispatch = manually triggered from GitHub Actions.
+# GitHub → Actions → Test Databricks Authentication → Run workflow
 on:
   workflow_dispatch:
 
+# 2. JOBS
 jobs:
   test-auth:
+
+    # Temporary Linux virtual machine provided by GitHub.
     runs-on: ubuntu-latest
+
+    # Use the GitHub environment named "dev".
+    # This environment stores DEV-specific variables and secrets.
     environment: dev
 
+    # 3. ENVIRONMENT VARIABLES
+    # Passed to the Databricks CLI during workflow execution.
     env:
+
+      # Databricks workspace URL.
+      # GitHub → Settings → Environments → dev → Variables
       DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+
+      # Service Principal application/client ID.
+      # Identifies WHICH machine account is authenticating.
       DATABRICKS_CLIENT_ID: ${{ vars.DATABRICKS_CLIENT_ID }}
+
+      # Service Principal OAuth client secret.
+      # Proves the identity of the machine account.
+      # Stored securely as a GitHub Environment Secret.
       DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
+
+      # Explicitly instruct the Databricks CLI to use
+      # OAuth Machine-to-Machine authentication.
+      # No personal user login or interactive browser required.
       DATABRICKS_AUTH_TYPE: oauth-m2m
 
+    # 4. STEPS
+    # Executed sequentially on the GitHub runner.
     steps:
+
+      # Download the repository to the runner.
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Install the Databricks CLI.
+      # CLI enables communication with Databricks APIs.
       - name: Install Databricks CLI
         uses: databricks/setup-cli@main
 
+      # 5. AUTHENTICATION TEST
+      # Request the identity of the authenticated principal.
+      # Successful response = credentials work and API is reachable.
+      # Failure = investigate host, client ID, secret, permissions,
+      # OAuth scopes, or authentication configuration.
       - name: Test Databricks authentication
         run: databricks current-user me

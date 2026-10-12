@@ -1,13 +1,50 @@
+# ==========================================================
+# RentFlow — Databricks Declarative Automation Bundle
+# ==========================================================
+# Defines WHAT to deploy and WHERE to deploy it.
+# The same codebase is promoted across DEV, TEST and PROD.
+
+# 1. Bundle identity
 bundle:
   name: rentflow-data-platform
 
+# 2. Resource definitions
+# Load Databricks Jobs, pipelines, etc. from YAML files.
 include:
   - resources/*.yml
 
+# 3. Deployment targets
+# A target defines environment-specific deployment settings.
 targets:
   dev:
+    # DEV: engineering/development environment
+    # Development mode adds isolation for developer deployments.
     mode: development
     default: true
-
     workspace:
-      host: https://adb-7405613424942929.9.azuredatabricks.net
+      host: ${var.dev_workspace_host}
+
+  # TEST: integration and acceptance testing
+  # Production mode avoids development-mode naming/isolation.
+  test:
+    mode: production
+    workspace:
+      host: ${var.test_workspace_host}
+
+  # PROD: live production environment
+  # Only approved, validated code should reach this target.
+  prod:
+    mode: production
+    workspace:
+      host: ${var.prod_workspace_host}
+
+# 4. Bundle variables
+# These allow configuration to vary by environment.
+# Descriptions document purpose; they do not set values.
+variables:
+  dev_workspace_host:
+    description: Databricks DEV workspace host
+  test_workspace_host:
+    description: Databricks TEST workspace host
+  prod_workspace_host:
+    description: Databricks PROD workspace host

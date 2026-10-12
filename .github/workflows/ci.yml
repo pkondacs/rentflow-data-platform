@@ -1,28 +1,54 @@
+# ==========================================================
+# RentFlow — Continuous Integration (CI)
+# ==========================================================
+# PURPOSE:
+# Automatically validate code changes before merging into main.
+# This workflow runs tests but does NOT deploy to Databricks.
+
+# Workflow name displayed in GitHub → Actions
 name: RentFlow CI
 
+# 1. TRIGGER
+# Run whenever a Pull Request targets the main branch.
+# Includes opening a PR and pushing new commits to it.
 on:
   pull_request:
     branches:
       - main
 
+# 2. JOBS
+# A workflow can contain multiple jobs.
+# Here we define one job called "test".
 jobs:
   test:
+
+    # GitHub provides a temporary Linux virtual machine.
+    # The runner is discarded after the job finishes.
     runs-on: ubuntu-latest
 
+    # 3. STEPS
+    # Steps execute sequentially within the same job.
     steps:
+
+      # Download the repository code onto the runner.
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Install Python 3.12 on the runner.
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
+      # Install the project's Python dependencies.
+      # requirements.txt defines the required packages.
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      # Execute automated tests using pytest.
+      # A failing test causes the job to fail.
       - name: Run tests
         run: |
           pytest
